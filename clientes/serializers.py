@@ -1,9 +1,14 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils import timezone
 from rest_framework import serializers
 
 from catalogo.serializers import EspecieSerializer, ServicioSerializer
 
 from .models import Mascota, Turno
+
+User = get_user_model()
 
 
 class MascotaSerializer(serializers.ModelSerializer):
@@ -61,3 +66,29 @@ class TurnoListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Turno
         fields = TURNO_FIELDS
+
+
+class RegistroSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, style={"input_type": "password"})
+    telefono = serializers.CharField(write_only=True, required=False, allow_blank=True)
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password", "first_name", "last_name", "telefono"]
+        extra_kwargs = {"email": {"required": True}}
+
+    def validate(self, data):
+        # valida la contraseña con las reglas de AUTH_PASSWORD_VALIDATORS de settings
+        usuario = User(username=data.get("username"), email=data.get("email"))
+        try:
+            validate_password(data["password"], usuario)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError({"password": list(error.messages)})
+        return data
+
+    def create(self, validated_data):
+        telefono = validated_data.pop("telefono", "")
+        user = User.objects.create_user(**validated_data)  # la señal crea el Cliente
+        user.cliente.telefono = telefono
+        user.cliente.save(update_fields=["telefono"])
+        return user
