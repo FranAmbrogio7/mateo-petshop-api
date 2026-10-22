@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 from catalogo import views as catalogo
 from clientes import views as clientes
+from ventas import views as ventas
 
 router = DefaultRouter()
 router.register("especies", catalogo.EspecieViewSet)
@@ -14,6 +15,7 @@ router.register("proveedores", catalogo.ProveedorViewSet)
 router.register("productos", catalogo.ProductoViewSet, basename="producto")
 router.register("mascotas", clientes.MascotaViewSet, basename="mascota")
 router.register("turnos", clientes.TurnoViewSet, basename="turno")
+router.register("pedidos", ventas.PedidoViewSet, basename="pedido")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
