@@ -3,6 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from catalogo import views as catalogo
+from clientes.auth_views import LoginView, LogoutView, PerfilView, RegistroView
 from clientes import views as clientes
 from ventas import views as ventas
 
@@ -19,6 +20,10 @@ router.register("pedidos", ventas.PedidoViewSet, basename="pedido")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/auth/login/", LoginView.as_view(), name="login"),
+    path("api/auth/logout/", LogoutView.as_view(), name="logout"),
+    path("api/auth/registro/", RegistroView.as_view(), name="registro"),
+    path("api/auth/perfil/", PerfilView.as_view(), name="perfil"),
     path("api/", include(router.urls)),
     path("api-auth/", include("rest_framework.urls")),
 ]
