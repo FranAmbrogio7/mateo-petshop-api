@@ -15,6 +15,8 @@ class PedidoViewSet(viewsets.ModelViewSet):
     ordering_fields = ["fecha", "total"]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):  # al generar la documentación
+            return Pedido.objects.none()
         qs = Pedido.objects.select_related("cliente__usuario").prefetch_related("detalles__producto")
         if self.request.user.is_staff:
             return qs

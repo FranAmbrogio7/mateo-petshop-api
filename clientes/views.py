@@ -16,6 +16,8 @@ class MascotaViewSet(viewsets.ModelViewSet):
     search_fields = ["nombre", "raza"]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):  # al generar la documentación
+            return Mascota.objects.none()
         qs = Mascota.objects.select_related("especie", "cliente__usuario")
         if self.request.user.is_staff:
             return qs
@@ -38,6 +40,8 @@ class TurnoViewSet(viewsets.ModelViewSet):
     ordering_fields = ["fecha_hora"]
 
     def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):  # al generar la documentación
+            return Turno.objects.none()
         qs = Turno.objects.select_related("mascota__especie", "servicio").prefetch_related(
             "servicio__especies"
         )
