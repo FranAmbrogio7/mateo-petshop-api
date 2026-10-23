@@ -142,4 +142,17 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# Documentación OpenAPI (drf-spectacular)
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Mateo Pet Shop API",
+    "DESCRIPTION": "API REST de Mateo Pet Shop: catálogo, mascotas, turnos y pedidos.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "ENUM_NAME_OVERRIDES": {
+        "EstadoTurnoEnum": "clientes.models.Turno.Estado",
+        "EstadoPedidoEnum": "ventas.models.Pedido.Estado",
+    },
 }

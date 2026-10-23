@@ -92,3 +92,18 @@ class RegistroSerializer(serializers.ModelSerializer):
         user.cliente.telefono = telefono
         user.cliente.save(update_fields=["telefono"])
         return user
+        
+
+class UsuarioSerializer(serializers.Serializer):
+    """Datos públicos del usuario logueado."""
+
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    email = serializers.EmailField()
+    nombre = serializers.CharField(source="get_full_name")
+    es_staff = serializers.BooleanField(source="is_staff")
+
+
+class LoginRespuestaSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    usuario = UsuarioSerializer()
