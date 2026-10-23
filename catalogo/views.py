@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
+from .filters import ProductoFilter
 
 from .models import Categoria, Especie, Marca, Producto, Proveedor, Servicio
 from .permissions import EsAdminOSoloLectura
@@ -32,6 +33,8 @@ class MarcaViewSet(viewsets.ReadOnlyModelViewSet):
 class ServicioViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Servicio.objects.filter(activo=True).prefetch_related("especies")
     serializer_class = ServicioSerializer
+    filterset_fields = ["especies"]
+    search_fields = ["nombre"]  
 
 
 class ProveedorViewSet(viewsets.ModelViewSet):
@@ -42,6 +45,9 @@ class ProveedorViewSet(viewsets.ModelViewSet):
 
 class ProductoViewSet(viewsets.ModelViewSet):
     permission_classes = [EsAdminOSoloLectura]
+    filterset_class = ProductoFilter
+    search_fields = ["nombre", "descripcion", "marca__nombre"]
+    ordering_fields = ["precio", "nombre", "stock", "creado"]
 
     def get_queryset(self):
         qs = Producto.objects.select_related("categoria", "marca").prefetch_related("especies")

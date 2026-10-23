@@ -11,6 +11,8 @@ class PedidoViewSet(viewsets.ModelViewSet):
     serializer_class = PedidoSerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ["get", "post", "head", "options"]  # un pedido no se edita: se cancela
+    filterset_fields = ["estado", "tipo_entrega"]
+    ordering_fields = ["fecha", "total"]
 
     def get_queryset(self):
         qs = Pedido.objects.select_related("cliente__usuario").prefetch_related("detalles__producto")

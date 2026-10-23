@@ -12,6 +12,8 @@ from .serializers import (
 
 class MascotaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
+    filterset_fields = ["especie"]
+    search_fields = ["nombre", "raza"]
 
     def get_queryset(self):
         qs = Mascota.objects.select_related("especie", "cliente__usuario")
@@ -32,6 +34,8 @@ class MascotaViewSet(viewsets.ModelViewSet):
 
 class TurnoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
+    filterset_fields = ["estado", "servicio", "mascota"]
+    ordering_fields = ["fecha_hora"]
 
     def get_queryset(self):
         qs = Turno.objects.select_related("mascota__especie", "servicio").prefetch_related(
