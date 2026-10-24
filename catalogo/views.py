@@ -1,4 +1,7 @@
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAdminUser
 from .filters import ProductoFilter
 
@@ -56,6 +59,23 @@ class ProductoViewSet(viewsets.ModelViewSet):
         return qs
 
     def get_serializer_class(self):
-        if self.action == "list":
+        if self.action in ("list", "stock_bajo"):
             return ProductoListSerializer
         return ProductoSerializer
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("umbral", int, description="Stock máximo a incluir (por defecto 5)")
+        ]
+    )
+    @action(detail=False, methods=["get"], url_path="stock-bajo", permission_classes=[IsAdminUser])
+    def stock_bajo(self, request):
+        """Productos con stock menor o igual al umbral, para reponer."""
+        try:
+            umbral = int(request.query_params.get("umbral", 5))
+        except ValueError:
+            raise ValidationError({"umbral": "Debe ser un número entero."})
+        qs = self.filter_queryset(self.get_queryset().filter(stock__lte=umbral))
+        page = self.paginate_queryset(qs)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
