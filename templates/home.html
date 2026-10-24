@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mateo Pet Shop — API</title>
+    <style>
+        :root {
+            --principal: #2f7d6d;
+            --principal-oscuro: #245f53;
+            --acento: #f2a541;
+            --fondo: #fbf7f1;
+            --tarjeta: #ffffff;
+            --texto: #24302e;
+            --suave: #5d6b68;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: var(--fondo);
+            color: var(--texto);
+            line-height: 1.5;
+        }
+
+        header {
+            background: var(--principal);
+            color: #fff;
+            padding: 56px 24px 48px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+        }
+
+        header p {
+            margin: 0;
+            opacity: .9;
+            font-size: 1.1rem;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .intro {
+            margin: 0 0 28px;
+            color: var(--suave);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            display: block;
+            background: var(--tarjeta);
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            border-top: 4px solid var(--acento);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .1);
+        }
+
+        .card h2 {
+            margin: 0 0 6px;
+            font-size: 1.1rem;
+            color: var(--principal-oscuro);
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--suave);
+            font-size: .95rem;
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .stat {
+            flex: 1 1 160px;
+            background: var(--tarjeta);
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.8rem;
+            color: var(--principal);
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            font-size: .9rem;
+            color: var(--suave);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>🐾 Mateo Pet Shop</h1>
+        <p>Alimentos balanceados, accesorios y estética para tu mascota</p>
+    </header>
+
+    <main>
+        <p class="intro">Bienvenido a la API REST de Mateo Pet Shop. Desde acá podés explorar los recursos, leer la
+            documentación o entrar al panel de gestión.</p>
+
+        <div class="grid">
+            <a class="card" href="/api/">
+                <h2>API navegable</h2>
+                <p>Explorá los recursos desde el navegador.</p>
+            </a>
+            <a class="card" href="/api/docs/">
+                <h2>Swagger</h2>
+                <p>Documentación interactiva para probar los endpoints.</p>
+            </a>
+            <a class="card" href="/api/redoc/">
+                <h2>Redoc</h2>
+                <p>Documentación de referencia de la API.</p>
+            </a>
+            <a class="card" href="/admin/">
+                <h2>Administración</h2>
+                <p>Panel de gestión del local.</p>
+            </a>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><strong>{{ total_productos }}</strong>productos en catálogo</div>
+            <div class="stat"><strong>{{ total_servicios }}</strong>servicios de estética</div>
+            <div class="stat"><strong>{{ total_especies }}</strong>especies atendidas</div>
+        </div>
+    </main>
+
+    <footer>Mateo Pet Shop · Río Cuarto · {% now "Y" %}</footer>
+</body>
+
+</html>

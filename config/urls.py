@@ -7,6 +7,7 @@ from catalogo import views as catalogo
 from clientes.auth_views import LoginView, LogoutView, PerfilView, RegistroView
 from clientes import views as clientes
 from ventas import views as ventas
+from .views import HomeView
 
 router = DefaultRouter()
 router.register("especies", catalogo.EspecieViewSet)
@@ -20,6 +21,7 @@ router.register("turnos", clientes.TurnoViewSet, basename="turno")
 router.register("pedidos", ventas.PedidoViewSet, basename="pedido")
 
 urlpatterns = [
+    path("", HomeView.as_view(), name="home"),
     path("admin/", admin.site.urls),
     path("api/auth/login/", LoginView.as_view(), name="login"),
     path("api/auth/logout/", LogoutView.as_view(), name="logout"),
