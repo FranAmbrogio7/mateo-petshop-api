@@ -1,6 +1,12 @@
-from rest_framework import viewsets
+from django.db import transaction
+from django.db.models import F
+from drf_spectacular.utils import extend_schema
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
+from catalogo.models import Producto
 from clientes.models import Cliente
 
 from .models import Pedido
@@ -25,3 +31,22 @@ class PedidoViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         cliente, _ = Cliente.objects.get_or_create(usuario=self.request.user)
         serializer.save(cliente=cliente)
+
+    @extend_schema(request=None, responses=PedidoSerializer)
+    @action(detail=True, methods=["post"])
+    def cancelar(self, request, pk=None):
+        """Cancela un pedido pendiente o pagado y devuelve el stock de sus productos."""
+        pedido = self.get_object()
+        if pedido.estado not in (Pedido.Estado.PENDIENTE, Pedido.Estado.PAGADO):
+            return Response(
+                {"detail": f"No se puede cancelar un pedido {pedido.get_estado_display().lower()}."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        with transaction.atomic():
+            for detalle in pedido.detalles.all():
+                Producto.objects.filter(pk=detalle.producto_id).update(
+                    stock=F("stock") + detalle.cantidad
+                )
+            pedido.estado = Pedido.Estado.CANCELADO
+            pedido.save(update_fields=["estado"])
+        return Response(self.get_serializer(pedido).data)

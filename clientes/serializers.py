@@ -56,6 +56,8 @@ class TurnoSerializer(serializers.ModelSerializer):
             )
         return data
 
+class CambiarEstadoTurnoSerializer(serializers.Serializer):
+    estado = serializers.ChoiceField(choices=Turno.Estado.choices)
 
 class TurnoListSerializer(serializers.ModelSerializer):
     """Listado: mascota y servicio anidados."""
