@@ -48,8 +48,12 @@ class Turno(models.Model):
     class Meta:
         ordering = ["-fecha_hora"]
         constraints = [
-            models.UniqueConstraint(fields=["mascota", "fecha_hora"], name="turno_unico_por_mascota")
+            # Un turno cancelado libera el horario: solo choca con turnos activos
+            models.UniqueConstraint(
+                fields=["mascota", "fecha_hora"],
+                condition=~models.Q(estado="cancelado"),
+                name="turno_unico_por_mascota",
+            )
         ]
-
     def __str__(self):
         return f"{self.servicio} - {self.mascota} ({self.fecha_hora:%d/%m %H:%M})"
