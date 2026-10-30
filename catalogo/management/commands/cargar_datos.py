@@ -119,7 +119,8 @@ class Command(BaseCommand):
             Turno.objects.create(
                 mascota=toby,
                 servicio=servicios["Baño y secado"],
-                fecha_hora=(timezone.now() + timedelta(days=3)).replace(
+                # localtime: las 10:00 en hora argentina (TIME_ZONE), no en UTC
+                fecha_hora=timezone.localtime(timezone.now() + timedelta(days=3)).replace(
                     hour=10, minute=0, second=0, microsecond=0
                 ),
             )
